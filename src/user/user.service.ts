@@ -10,7 +10,6 @@ export class UserService {
   ];
 
   // Validate password (synchronous)
-
   validatePassword(username: string, password: string): boolean {
     if (!username) {
       throw new Error('Username is required'); // Handle case when username is undefined or empty
@@ -24,7 +23,12 @@ export class UserService {
   }
 
   // Find user by username (synchronous)
-  findUserByUsername(username: string): User | undefined {
-    return this.users.find((user) => user.username === username);
+  findUserByUsername(username: string, password: string): User | undefined {
+    const user = this.users.find((user) => user.username === username);
+
+    if (user && bcrypt.compareSync(password, user.password)) {
+      return user;
+    }
+    throw new Error('User Not Found');
   }
 }

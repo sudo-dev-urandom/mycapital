@@ -11,8 +11,8 @@ export class AuthService {
   ) {}
 
   // Method to validate the user
-  validateUser(username: string): User | null {
-    const user = this.userService.findUserByUsername(username);
+  validateUser(username: string, password: string): User | null {
+    const user = this.userService.findUserByUsername(username, password);
     if (!user) {
       return null; // If user not found, return null
     }
@@ -20,15 +20,14 @@ export class AuthService {
   }
 
   // Method to generate a token after validating the user
-  generateToken(username: string): string {
-    const user = this.validateUser(username); // Validate user
+  generateToken(username: string, password: string): string {
+    const user = this.validateUser(username, password); // Validate user
 
-    if (!user) {
-      throw new Error('User not found'); // Throw an error if user is not found
+    if (user) {
+      // If user is valid, generate the token
+      const payload = { username: user.username, userId: user.id }; // Include more user data as needed
+      return this.jwtService.sign(payload); // Return JWT token
     }
-
-    // If user is valid, generate the token
-    const payload = { username: user.username, userId: user.id }; // Include more user data as needed
-    return this.jwtService.sign(payload); // Return JWT token
+    return 'Unauthorized';
   }
 }
