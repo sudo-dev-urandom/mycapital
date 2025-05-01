@@ -22,9 +22,23 @@ export class AuthController {
         token: token,
       };
     } catch (error) {
-      // Return Unauthorized if user is not found
       console.log(error);
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @Post('refresh-token')
+  refreshToken(@Body() body: { refreshToken: string }) {
+    try {
+      const newAccessToken = this.authService.refreshAccessToken(
+        body.refreshToken,
+      );
+      return {
+        refreshToken: newAccessToken,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
     }
   }
 }
