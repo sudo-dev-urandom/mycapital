@@ -41,4 +41,20 @@ export class AuthController {
       throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
     }
   }
+
+  @Post('validate-token')
+  validateToken(@Body() body: { token: string }) {
+    try {
+      const decoded = this.authService.validateToken(body.token);
+      return {
+        valid: true,
+        payload: decoded,
+      };
+    } catch {
+      return {
+        valid: false,
+        message: 'Invalid or expired token',
+      };
+    }
+  }
 }

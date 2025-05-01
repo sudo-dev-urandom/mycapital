@@ -2,14 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service'; // Assuming you have a UserService
 import { User } from '../user/interfaces/user.interface'; // Import the User interface
-// import { TokenPayload } from 'src/common/interfaces/token-payload.interface';
-
-interface JwtPayload {
-  username: string;
-  userId: number;
-  iat?: number;
-  exp?: number;
-}
+import { JwtPayload } from '../common/interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -47,6 +40,12 @@ export class AuthService {
     return this.jwtService.sign(newPayload, {
       secret: process.env.JWT_SECRET,
       expiresIn: '1h',
+    });
+  }
+
+  validateToken(token: string): JwtPayload {
+    return this.jwtService.verify<JwtPayload>(token, {
+      secret: process.env.JWT_SECRET,
     });
   }
 }
