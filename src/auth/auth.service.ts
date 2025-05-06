@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service'; // Assuming you have a UserService
-import { User } from '../user/interfaces/user.interface'; // Import the User interface
+import { UserService } from '../user/user.service';
+import { User } from '../user/interfaces/user.interface';
 import { JwtPayload } from '../common/interfaces/jwt-payload.interface';
 
 @Injectable()
@@ -9,6 +10,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
+    private configService: ConfigService,
   ) {}
 
   validateUser(username: string, password: string): User | null {
@@ -31,19 +33,19 @@ export class AuthService {
 
   refreshAccessToken(refreshToken: string): string {
     const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
-      secret: process.env.JWT_SECRET,
+      secret: this.configService.get<string>('JWT_SECRET'),
     });
 
     const newPayload = { username: payload.username, userId: payload.userId };
     return this.jwtService.sign(newPayload, {
-      secret: process.env.JWT_SECRET,
+      secret: this.configService.get<string>('JWT_SECRET'),
       expiresIn: '24h',
     });
   }
 
   validateToken(token: string): JwtPayload {
     return this.jwtService.verify<JwtPayload>(token, {
-      secret: process.env.JWT_SECRET,
+      secret: this.configService.get<string>('JWT_SECRET'),
     });
   }
 }

@@ -4,8 +4,12 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  Get,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -56,5 +60,15 @@ export class AuthController {
         message: 'Invalid or expired token',
       };
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('test-connection')
+  testConnection(@Req() req) {
+    console.log(req.user);
+    return {
+      message: 'Token is valid. Connection successful.',
+      user: req.user, // This will be the decoded JWT payload
+    };
   }
 }
