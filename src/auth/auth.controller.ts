@@ -16,9 +16,9 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('generate-token')
-  generateToken(@Body() body: { username: string; password: string }) {
+  async generateToken(@Body() body: { username: string; password: string }) {
     try {
-      const token = this.authService.generateToken(
+      const token = await this.authService.generateToken(
         body.username,
         body.password,
       );
