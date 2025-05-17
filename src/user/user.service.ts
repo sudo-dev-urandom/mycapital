@@ -13,24 +13,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {
-    // Seed initial users if not exists (only for development)
-    this.seedInitialUsers();
-  }
-
-  // Seed initial users for development
-  private async seedInitialUsers(): Promise<void> {
-    const count = await this.userRepository.count();
-    if (count === 0) {
-      const users = [
-        { username: 'john_doe', password: await bcrypt.hash('12345', 10) },
-        { username: 'jane_doe', password: await bcrypt.hash('abcdef', 10) },
-      ];
-
-      await this.userRepository.save(users);
-      console.log('Initial users seeded successfully');
-    }
-  }
+  ) {}
 
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
