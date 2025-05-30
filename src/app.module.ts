@@ -3,13 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-// import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
+import { TransactionModule } from './transaction/transaction.module';
+import { Transaction } from './transaction/transaction.entity';
+
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), // Load .env globally
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -20,11 +21,12 @@ import { User } from './user/user.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User],
+        entities: [User, Transaction],
         synchronize: true,
       }),
     }),
     AuthModule,
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
