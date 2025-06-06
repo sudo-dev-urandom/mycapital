@@ -26,6 +26,22 @@ export class TransactionService {
     return this.transactionRepository.save(transaction);
   }
 
+  async addExpense(
+    userId: number,
+    amount: number,
+    description?: string,
+  ): Promise<Transaction> {
+    const transaction = this.transactionRepository.create({
+      userId,
+      amount,
+      type: 'expense',
+      description,
+      date: new Date(),
+    });
+
+    return this.transactionRepository.save(transaction);
+  }
+
   async getUserTransactions(userId: number): Promise<Transaction[]> {
     return this.transactionRepository.find({
       where: { userId },
